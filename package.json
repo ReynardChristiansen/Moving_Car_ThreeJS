@@ -1,17 +1,20 @@
 {
   "name": "threejs",
   "version": "1.0.0",
+  "type": "module",
   "main": "main.js",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "start": "vite preview"
+    "start": "vite preview",
+    "postinstall": "chmod +x node_modules/.bin/vite"
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "three": "^0.173.0"
+    "three": "^0.173.0",
+    "threejs": "file:"
   },
   "devDependencies": {
     "vite": "^6.0.11"

@@ -15,7 +15,7 @@ D: Turn right
 
 ## Demo
 
-You can try out Hearmify here: https://moving-car-three-js.vercel.app
+You can try out Hearmify here: https://reynard-moving-car.vercel.app/
 
 ## Feedback
 

@@ -53,7 +53,7 @@ scene.add(ground);
 let car;
 const loader = new GLTFLoader();
 loader.load(
-  "public/car.glb",
+  "car.glb",
   (gltf) => {
     car = gltf.scene;
     car.traverse((child) => {

@@ -3,7 +3,7 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
 // Setup scene
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x87CEEB);
+scene.background = new THREE.Color(0x010803);
 const camera = new THREE.PerspectiveCamera(
   75,
   window.innerWidth / window.innerHeight,
@@ -34,7 +34,7 @@ directionalLight.intensity = 2;
 const groundSize = 100;
 const groundGeometry = new THREE.PlaneGeometry(groundSize, groundSize);
 const groundMaterial = new THREE.MeshStandardMaterial({
-  color: 0x959c99,
+  color: 0xffffff,
   side: THREE.DoubleSide,
 });
 const ground = new THREE.Mesh(groundGeometry, groundMaterial);

@@ -1,9 +1,9 @@
 import * as THREE from "three";
-import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
 // Setup scene
 const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x87CEEB);
 const camera = new THREE.PerspectiveCamera(
   75,
   window.innerWidth / window.innerHeight,
@@ -15,15 +15,9 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.shadowMap.enabled = true;
 document.body.appendChild(renderer.domElement);
 
-// Add orbit controls
-const controls = new OrbitControls(camera, renderer.domElement);
-camera.position.set(0, 5, 10);
-controls.update();
-
 // Add lights
 const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
 scene.add(ambientLight);
-
 
 const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
 directionalLight.position.set(5, 5, 5);
@@ -34,14 +28,13 @@ const pointLight = new THREE.PointLight(0xffffff, 2);
 pointLight.position.set(0, 5, 5);
 scene.add(pointLight);
 
-
-ambientLight.intensity = 1; 
+ambientLight.intensity = 1;
 directionalLight.intensity = 2;
 
-// Create ground
-const groundGeometry = new THREE.PlaneGeometry(100, 100);
+const groundSize = 100;
+const groundGeometry = new THREE.PlaneGeometry(groundSize, groundSize);
 const groundMaterial = new THREE.MeshStandardMaterial({
-  color: 0xffffff,
+  color: 0x959c99,
   side: THREE.DoubleSide,
 });
 const ground = new THREE.Mesh(groundGeometry, groundMaterial);
@@ -98,24 +91,44 @@ function animate() {
   if (car) {
     const speed = 0.2;
     const rotationSpeed = 0.05;
+    const boundary = groundSize / 2 - 1; // Limit movement within ground area
 
+    let newX = car.position.x;
+    let newZ = car.position.z;
+
+    // Forward & Backward (Z-axis)
     if (keys.w) {
-      car.position.x += Math.sin(car.rotation.y) * speed;
-      car.position.z += Math.cos(car.rotation.y) * speed;
+      newX += Math.sin(car.rotation.y) * speed;
+      newZ += Math.cos(car.rotation.y) * speed;
     }
     if (keys.s) {
-      car.position.x -= Math.sin(car.rotation.y) * speed;
-      car.position.z -= Math.cos(car.rotation.y) * speed;
+      newX -= Math.sin(car.rotation.y) * speed;
+      newZ -= Math.cos(car.rotation.y) * speed;
     }
-    if (keys.a) {
-      car.rotation.y += rotationSpeed;
+
+    // Left & Right Rotation (Y-axis) only when moving
+    if (keys.w || keys.s) {
+      if (keys.a) {
+        car.rotation.y += rotationSpeed;
+      }
+      if (keys.d) {
+        car.rotation.y -= rotationSpeed;
+      }
     }
-    if (keys.d) {
-      car.rotation.y -= rotationSpeed;
+
+    // Collision detection for boundaries
+    if (Math.abs(newX) <= boundary && Math.abs(newZ) <= boundary) {
+      car.position.x = newX;
+      car.position.z = newZ;
     }
+
+    // Camera follows the car from behind
+    const cameraOffset = new THREE.Vector3(0, 7, -6); // Position behind the car
+    const cameraPosition = cameraOffset.clone().applyMatrix4(car.matrixWorld);
+    camera.position.lerp(cameraPosition, 0.1); // Smooth transition
+    camera.lookAt(car.position);
   }
 
-  controls.update();
   renderer.render(scene, camera);
 }
 animate();

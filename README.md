@@ -17,6 +17,10 @@ D: Turn right
 
 You can try out Hearmify here: https://reynard-moving-car.vercel.app/
 
+## Alternative Version
+
+If you want to try the project with Socket.io, you can check it out here: https://github.com/ReynardChristiansen/Moving_Car_ThreeJS_Socket
+
 ## Feedback
 
 If you have any feedback, please reach out to me at reynard.satria@gmail.com

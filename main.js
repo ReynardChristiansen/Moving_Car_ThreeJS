@@ -88,46 +88,52 @@ document.addEventListener("keyup", (event) => {
 function animate() {
   requestAnimationFrame(animate);
 
+  // Movement controls inside animate()
   if (car) {
     const speed = 0.2;
     const rotationSpeed = 0.05;
     const boundary = groundSize / 2 - 1; // Limit movement within ground area
-
+  
     let newX = car.position.x;
     let newZ = car.position.z;
-
-    // Forward & Backward (Z-axis)
-    if (keys.w) {
+  
+    // Detect if both W and S are pressed (cancel movement)
+    const movingForward = keys.w && !keys.s;
+    const movingBackward = keys.s && !keys.w;
+  
+    if (movingForward) {
       newX += Math.sin(car.rotation.y) * speed;
       newZ += Math.cos(car.rotation.y) * speed;
     }
-    if (keys.s) {
+    if (movingBackward) {
       newX -= Math.sin(car.rotation.y) * speed;
       newZ -= Math.cos(car.rotation.y) * speed;
     }
-
-    // Left & Right Rotation (Y-axis) only when moving
-    if (keys.w || keys.s) {
+  
+    // Only rotate if moving forward or backward
+    if (movingForward || movingBackward) {
       if (keys.a) {
-        car.rotation.y += rotationSpeed;
+        car.rotation.y += movingForward ? rotationSpeed : -rotationSpeed; // Normal or reversed rotation
       }
       if (keys.d) {
-        car.rotation.y -= rotationSpeed;
+        car.rotation.y -= movingForward ? rotationSpeed : -rotationSpeed; // Normal or reversed rotation
       }
     }
-
+  
     // Collision detection for boundaries
     if (Math.abs(newX) <= boundary && Math.abs(newZ) <= boundary) {
       car.position.x = newX;
       car.position.z = newZ;
     }
-
+  
     // Camera follows the car from behind
     const cameraOffset = new THREE.Vector3(0, 7, -6); // Position behind the car
     const cameraPosition = cameraOffset.clone().applyMatrix4(car.matrixWorld);
     camera.position.lerp(cameraPosition, 0.1); // Smooth transition
     camera.lookAt(car.position);
   }
+  
+
 
   renderer.render(scene, camera);
 }
